@@ -1,5 +1,5 @@
 {
-    "main": "node_modules/expo/AppEntry.js",
+    "main": "src/index.js",
     "scripts": {
         "start": "expo start",
         "android": "expo start --android",
@@ -23,7 +23,7 @@
     "private": false,
     "name": "react-native-hook-use-persist",
     "description": "react-native-hook-use-persist is a hook you can use to add a persistent state. The usage is like `useState` but the value is kept in `AsyncStorage`.",
-    "version": "1.0.1",
+    "version": "1.0.8",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/dameyerdave/react-native-hook-use-persist.git"
