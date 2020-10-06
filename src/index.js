@@ -1,36 +1,42 @@
 import { useState, useEffect } from 'react'
-import { AsyncStorage, DeviceEventEmitter } from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
+import SyncStorage from 'sync-storage';
 
-export default function usePersist(_key, _default) {
+const initPersist = async () => {
+    try {
+        return await SyncStorage.init();
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+const usePersist = (_key, _default) => {
     const KEY = '@_@' + _key
     const [obj, setObj] = useState(_default)
 
-    const load = async () => {
+    const set = (newObj) => {
         try {
-            const _obj = await AsyncStorage.getItem(KEY)
-            if (_obj) {
-                setObj(JSON.parse(_obj))
-            }
-        }
-        catch (err) {
-            console.log(err)
-        }
-    }
-
-    const set = async (newObj) => {
-        newObj = typeof newObj === 'function' ? newObj(obj): newObj
-        try {
+            newObj = typeof newObj === 'function' ? newObj(obj) : newObj
+            console.log('set', newObj)
             setObj(newObj)
+            SyncStorage.set(KEY, JSON.stringify(newObj));
             DeviceEventEmitter.emit(KEY, newObj)
-            await AsyncStorage.setItem(KEY, JSON.stringify(newObj))
         }
         catch (err) {
-            console.log(err)
+            console.err(err)
         }
     }
 
     useEffect(() => {
-        load()
+        const value = JSON.parse(SyncStorage.get(KEY))
+        console.log('value', value)
+        if (value) {
+            setObj(value)
+        } else {
+            set(_default)
+        }
+
         const subscription = DeviceEventEmitter.addListener(KEY, (newObj) => { setObj(newObj) })
         return () => {
             subscription.remove()
@@ -39,3 +45,5 @@ export default function usePersist(_key, _default) {
 
     return [obj, set]
 }
+
+export { usePersist, initPersist }
