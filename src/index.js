@@ -13,28 +13,35 @@ const initPersist = async () => {
 
 const usePersist = (_key, _default) => {
     const KEY = '@_@' + _key
-    const [obj, setObj] = useState((SyncStorage.get(KEY) || _default))
+    const [_, bump] = useState(0)
 
     const set = (newObj) => {
+        // console.log('set', newObj, typeof newObj)
         try {
-            newObj = typeof newObj === 'function' ? newObj(obj) : newObj
-            setObj(newObj)
-            SyncStorage.set(KEY, newObj);
+            newObj = typeof newObj === 'function' ? newObj(get()) : newObj
+            SyncStorage.set(KEY, newObj)
+            bump(current => current + 1)
             DeviceEventEmitter.emit(KEY, newObj)
         }
         catch (err) {
-            console.err(err)
+            console.error(err)
         }
     }
 
+    const get = () => {
+        return SyncStorage.get(KEY)
+    }
+
     useEffect(() => {
-        const subscription = DeviceEventEmitter.addListener(KEY, (newObj) => { setObj(newObj) })
+        const subscription = DeviceEventEmitter.addListener(KEY, () => {
+            bump(current => current + 1)
+        })
         return () => {
             subscription.remove()
         }
     }, [])
 
-    return [obj, set]
+    return [get, set]
 }
 
 export { usePersist, initPersist }

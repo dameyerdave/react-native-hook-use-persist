@@ -23,7 +23,7 @@
     "private": false,
     "name": "react-native-hook-use-persist",
     "description": "react-native-hook-use-persist is a hook you can use to add a persistent state. The usage is like `useState` but the value is kept in `AsyncStorage`.",
-    "version": "1.0.8",
+    "version": "1.0.10",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/dameyerdave/react-native-hook-use-persist.git"
