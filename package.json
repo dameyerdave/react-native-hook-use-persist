@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "dameyerdave/sync-storage": "^0.4.2"
+    "sync-storage": "dameyerdave/sync-storage"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
